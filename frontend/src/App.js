@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import react from "react"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import Login from "./pages/Login"
+import Register from "./pages/Register"
+import Home from "./pages/Home"
+import Navbar from "./components/Nabar"
+import NotFound from "./pages/NotFound"
+import ProtectedRoute from "./components/ProtectedRoute"
+
+function Logout() {
+  localStorage.clear()
+  return <Navigate to="/login" />
+}
+
+function RegisterAndLogout() {
+  localStorage.clear()
+  return <Register />
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            // Temporarily commenting out the ProtectedRoute component
+            /*<ProtectedRoute>*/
+              <Home >
+                <navbar>
+
+                </navbar>
+              </Home>
+            /*</ProtectedRoute>*/
+          }
+        />
+        <Route path="/Home" element={<Home />} />
+        <Route path="/logout" element={<Logout />} />
+        <Route path="/register" element={<RegisterAndLogout />} />
+        <Route path="*" element={<NotFound />}></Route>
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
-export default App;
+
+export default App
