@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import {observer} from 'mobx-react';
 import UserStore from ".//stores/UserStore.js";
 import LoginForm from ".//components/LoginForm.js";
 import InputField from "./components/InputField.js";
@@ -60,11 +61,21 @@ class App extends Component {
     if (UserStore.loading) {
       return (
         <div className="app">
-          <div className="container">Loading please wait</div>
+          <div className="container">
+            Loading please wait
+          </div>
         </div>
       );
+    }else{
+      if(UserStore.isLoggedIn) { 
+        <div className="app">
+          <div className="container">
+            welcone {UserStore.username}
+            <SubmitButton text={'LogOut'} disabled={false} onlclick={() => this.doLogout} />
+          </div>
+        </div>
     }
-
+  }
     const { isLoaded, items } = this.state;
 
     if (!isLoaded) {
@@ -72,8 +83,19 @@ class App extends Component {
     }
 
     return (
-      <div className="App">
-        <ul>
+      <div className="app">
+          <div className="container">
+              <LoginForm/>
+          </div>
+        </div>
+    );
+  }
+}
+
+export default observer(App);
+
+
+/*  <ul>
           {items.map((item) => (
             <li key={item.id}>
               <div>
@@ -85,9 +107,4 @@ class App extends Component {
             </li>
           ))}
         </ul>
-      </div>
-    );
-  }
-}
-
-export default App;
+*/
