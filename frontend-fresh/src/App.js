@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import {observer} from 'mobx-react';
-import UserStore from ".//stores/UserStore.js";
-import LoginForm from ".//components/LoginForm.js";
-import InputField from "./components/InputField.js";
-import SubmitButton from ".//components/SubmitButton.js";
+import { observer } from 'mobx-react';
+import UserStore from ".//stores/UserStore";
+import LoginForm from ".//components/LoginForm";
+import SubmitButton from ".//components/SubmitButton";
+
 
 class App extends Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    // Fetch user login status
+  // Fetch user login status
     try {
       let res = await fetch('/isLoggedIn/', {
         method: 'POST',
@@ -39,10 +39,12 @@ class App extends Component {
       UserStore.loading = false;
       UserStore.isLoggedIn = false;
     }
+
+    // Fetch data from the API
+    this.fetchData();
   }
 
   async fetchData() {
-    // Fetch data from the API
     try {
       let res = await fetch('http://localhost:5400/api/vans');
       let json = await res.json();
@@ -57,6 +59,28 @@ class App extends Component {
     }
   }
 
+  async doLogout() {
+    try {
+      let res = await fetch('/logout/', {
+        method: 'POST',
+        headers: {
+          'Accept': "application/json",
+          'Content-Type': 'application/json'
+        }
+      });
+
+      let result = await res.json();
+
+      if (result && result.success) {
+        UserStore.loading = false;
+        UserStore.isLoggedIn = false;
+        UserStore.username = '';
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   render() {
     if (UserStore.loading) {
       return (
@@ -66,16 +90,32 @@ class App extends Component {
           </div>
         </div>
       );
-    }else{
-      if(UserStore.isLoggedIn) { 
+    }
+
+    if (UserStore.isLoggedIn) {
+      return (
         <div className="app">
           <div className="container">
-            welcone {UserStore.username}
-            <SubmitButton text={'LogOut'} disabled={false} onlclick={() => this.doLogout} />
+            Welcome {UserStore.username}
+            <SubmitButton text={'LogOut'} disabled={false} onClick={() => this.doLogout()} />
+            {this.renderVanList()}
           </div>
         </div>
+      );
     }
+
+    return (
+      <div className="app">
+        <div className="container">
+        <SubmitButton text={'LogOut'} disabled={false} onClick={() => this.doLogout()} />
+          <LoginForm />
+
+        </div>
+      </div>
+    );
   }
+
+  renderVanList() {
     const { isLoaded, items } = this.state;
 
     if (!isLoaded) {
@@ -83,28 +123,17 @@ class App extends Component {
     }
 
     return (
-      <div className="app">
-          <div className="container">
-              <LoginForm/>
-          </div>
-        </div>
+      <ul>
+        {items.map((item) => (
+          <li key={item.id}>
+            <div>
+              working
+            </div>
+          </li>
+        ))}
+      </ul>
     );
   }
 }
 
-export default observer(App);
-
-
-/*  <ul>
-          {items.map((item) => (
-            <li key={item.id}>
-              <div>
-                <p>{item.model}</p>
-                <p>{item.make}</p>
-                <p>{item.mileage}</p>
-                <p>{item.price}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-*/
+export default App;
