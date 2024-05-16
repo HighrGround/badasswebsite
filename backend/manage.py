@@ -20,3 +20,13 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+'''
+all edited files
+views.py
+urls.py
+serializers.py
+urls.py
+
+'''

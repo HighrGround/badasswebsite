@@ -1,8 +1,10 @@
 from django.urls import path
 from . import views
+from django.views.generic import TemplateView
+
+
 
 urlpatterns = [
-    path("notes/", views.NoteListCreate.as_view(), name="note-list"),
-    path("notes/delete/<int:pk>/", views.NoteDelete.as_view(), name="delete-note"),
-    path('api/generate', views.generate_response, name='generate_response'),
+    path('test/', views.TestView.as_view(), name='test'),
+    path('generate/', views.GenerateResponse.as_view(), name='generate_response'),
 ]
