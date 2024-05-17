@@ -21,6 +21,6 @@ from django.shortcuts import render
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("api/", include("api.urls")),
+    path("/", include("api.urls")),
     #diverts to the other urls pi as like an else statement and calls one of the functions
 ]
