@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,7 +27,9 @@ SECRET_KEY = 'django-insecure-ifo8u$qv@&7z7b%u5&^p$lci6@7a(j^x61p7pw8#zi15v66!&6
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, '/Users/nathancassells/Documents/Code/JSweb/fullapp/frontend/build/static' ),
+]
 
 # Application definition
 
@@ -103,7 +105,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, '/Users/nathancassells/Documents/Code/JSweb/fullapp/frontend/build' )],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

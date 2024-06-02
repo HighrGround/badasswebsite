@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import Header from './components/Header'
+import prompt from './pages/Prompt'
 
 function App() {
   return (
