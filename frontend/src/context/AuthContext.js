@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 
 const AuthContext = createContext()
 
-export default AuthContext;
+
 
 
 export const AuthProvider = ({children}) => {
@@ -100,3 +100,4 @@ export const AuthProvider = ({children}) => {
         </AuthContext.Provider>
     )
 }
+export default AuthContext;

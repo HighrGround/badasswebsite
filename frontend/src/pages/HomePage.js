@@ -1,49 +1,46 @@
-import React, { Component } from "react";
+import React, {useState, useEffect, useContext} from 'react'
+import AuthContext from '../context/AuthContext'
 
-class PromptInput extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      prompt: "",
-    };
-  }
+const HomePage = () => {
+    let [notes, setNotes] = useState([])
+    let {authTokens, logoutUser} = useContext(AuthContext)
 
-  async sendPrompt() {
-    try {
-      const res = await fetch('http://localhost:8000/api/generate/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ prompt: this.state.prompt })
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const result = await res.json();
-      console.log('Response:', result);
-    } catch (error) {
-      console.error('Error:', error);
+    useEffect(()=> {
+        getNotes()
+    }, [])
+
+
+    let getNotes = async() =>{
+        let response = await fetch('http://127.0.0.1:8000/api/notes/', {
+            method:'GET',
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':'Bearer ' + String(authTokens.access)
+            }
+        })
+        console.log(response)
+        let data = await response.json()
+
+        if(response.status === 200){
+            setNotes(data)
+        }else if(response.statusText === 'Unauthorized'){
+            logoutUser()
+        }
+        
     }
-  }
 
-  render() {
     return (
-      <div>
-        <input
-          type="text"
-          placeholder="type a message"
-          onChange={(e) => this.setState({ prompt: e.target.value })}
-        />
-        <button onClick={() => this.sendPrompt()}>Submit</button>
-      </div>
-    );
-  }
+        <div>
+            <p>You are logged to the home page!</p>
+
+
+            <ul>
+                {notes.map(note => (
+                    <li key={note.id} >{note.body}</li>
+                ))}
+            </ul>
+        </div>
+    )
 }
 
-export default PromptInput;
-/*
-STATICFILES_DIRS = [
-  os.path.join(BASE_DIR, '/Users/nathancassells/Documents/Code/JSweb/fullapp/frontend/build/static' ),
-]
-*/
+export default HomePage
