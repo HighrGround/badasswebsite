@@ -1,46 +1,112 @@
-import React, {useState, useEffect, useContext} from 'react'
-import AuthContext from '../context/AuthContext'
+import React, { Component } from 'react';
+import AuthContext from '../context/AuthContext';
+
+class PromptInput extends Component {
+  static contextType = AuthContext;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      prompt: "",
+    };
+  }
+
+  async sendPrompt() {
+    try {
+      const { authTokens } = this.context;
+      const res = await fetch('http://localhost:8000/api/generate/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + String(authTokens.access),
+          'text': this.state.prompt // Add the prompt value to the headers
+        }
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const result = await res.json();
+      console.log('Response:', result);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <input
+          type="text"
+          placeholder="type a message"
+          onChange={(e) => this.setState({ prompt: e.target.value })}
+        />
+        <button onClick={() => this.sendPrompt()}>Submit</button>
+      </div>
+    );
+  }
+}
+
+export default PromptInput;
+
+/*
+STATICFILES_DIRS = [
+  os.path.join(BASE_DIR, '/Users/nathancassells/Documents/Code/JSweb/fullapp/frontend/build/static' ),
+]
+
+
+
+
+
+
+
+
+
+
 
 const HomePage = () => {
-    let [notes, setNotes] = useState([])
+    //let [notes, setNotes] = useState([])
     let {authTokens, logoutUser} = useContext(AuthContext)
 
     useEffect(()=> {
-        getNotes()
+        //getNotes()
     }, [])
 
 
-    let getNotes = async() =>{
-        let response = await fetch('http://127.0.0.1:8000/api/notes/', {
-            method:'GET',
-            headers:{
-                'Content-Type':'application/json',
-                'Authorization':'Bearer ' + String(authTokens.access)
-            }
-        })
-        console.log(response)
-        let data = await response.json()
+let sendPrompt = async() => {
+    let response = await fetch('http://127.0.0.1:8000/api/generate/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            
+        },
+        body: JSON.stringify({ prompt: this.state.prompt })
+    });
 
-        if(response.status === 200){
-            setNotes(data)
-        }else if(response.statusText === 'Unauthorized'){
-            logoutUser()
-        }
-        
+    let data = await response.json();
+
+    if(response.status === 200){
+        console.log(data);
+    }else if(response.status === 401){
+        logoutUser();
     }
-
-    return (
-        <div>
-            <p>You are logged to the home page!</p>
-
-
-            <ul>
-                {notes.map(note => (
-                    <li key={note.id} >{note.body}</li>
-                ))}
-            </ul>
-        </div>
-    )
 }
 
+
+    return (
+              <div>
+                <input
+                  type="text"
+                  placeholder="type a message"
+                  
+                />
+                
+                <button onClick={sendPrompt}>Submit</button>
+              </div>
+            );
+          }
+        
+//<button onClick={() => this.sendPrompt()}>Submit</button>
+//onChange={(e) => this.setState({ prompt: e.target.value })}
+
 export default HomePage
+*/

@@ -56,32 +56,38 @@ from langchain_community.chat_models import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 class GenerateResponse(APIView):
-    @permission_classes([IsAuthenticated])
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
-            request_data = json.loads(request.body)
-            input_text = request_data.get('text', '')
+            input_text = request.headers.get('Text', '')
 
             if not input_text:
                 return Response({'error': 'No text provided'}, status=status.HTTP_400_BAD_REQUEST)
             
+            # Assuming you have the necessary imports and definitions for ChatOllama, ChatPromptTemplate, and StrOutputParser
             llm = ChatOllama(model="mistral")
-            prompt = ChatPromptTemplate.from_template("is this working")
-
+            prompt = ChatPromptTemplate.from_template(input_text)
             chain = prompt | llm | StrOutputParser()
-
 
             response_data = chain.invoke({"options": input_text})
 
             return Response({'response': response_data}, status=status.HTTP_200_OK)
         except Exception as e:
-
             logger.error(f"Error occurred: {str(e)}")
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
+    '''
     @permission_classes([IsAuthenticated])
     def get(self, request):
         try:
@@ -91,4 +97,4 @@ class GenerateResponse(APIView):
         except Exception as e:
             # Log the error message
             logger.error(f"Error occurred: {str(e)}")
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)'''

@@ -141,6 +141,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+CORS_ALLOW_HEADERS = [
+    'authorization',
+    'content-type',
+    'Text',
+    'text'
+    # Add any other headers you need
+]
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
